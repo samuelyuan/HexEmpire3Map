@@ -1,12 +1,12 @@
 package fileio
 
 const (
-	HLOG    = 14
-	HSIZE   = 1 << HLOG
-  // The maximum number of literals in a chunk (32)
+	HLOG  = 14
+	HSIZE = 1 << HLOG
+	// The maximum number of literals in a chunk (32)
 	MAX_LIT = 1 << 5
 	MAX_OFF = 1 << 13
-  // The maximum back-reference length (264).
+	// The maximum back-reference length (264).
 	MAX_REF = (1 << 8) + (1 << 3)
 )
 
@@ -60,7 +60,7 @@ func Decompress(inputBytes []byte) []byte {
 }
 
 func getHashSlot(hashValue uint64) uint64 {
-	return ((hashValue ^ hashValue<<5) >> (24 - HLOG) - hashValue * 5) & (HSIZE - 1)
+	return ((hashValue^hashValue<<5)>>(24-HLOG) - hashValue*5) & (HSIZE - 1)
 }
 
 func LzfCompress(input []byte, output []byte) int {
@@ -80,7 +80,7 @@ func LzfCompress(input []byte, output []byte) int {
 	for {
 		if inputIndex < inputLength-2 {
 			hval = (hval << 8) | uint64(input[inputIndex+2])
-      hashSlot = getHashSlot(hval)
+			hashSlot = getHashSlot(hval)
 			reference = HashTable[hashSlot]
 			HashTable[hashSlot] = uint64(inputIndex)
 			offset = uint64(inputIndex) - reference - 1
@@ -128,14 +128,14 @@ func LzfCompress(input []byte, output []byte) int {
 
 				inputIndex += length - 1
 
-				hval = (uint64(input[inputIndex])<<8) | uint64(input[inputIndex+1])
-				hval = (hval<<8) | uint64(input[inputIndex+2])
-        hashSlot = getHashSlot(hval)
+				hval = (uint64(input[inputIndex]) << 8) | uint64(input[inputIndex+1])
+				hval = (hval << 8) | uint64(input[inputIndex+2])
+				hashSlot = getHashSlot(hval)
 				HashTable[hashSlot] = uint64(inputIndex)
 				inputIndex++
 
-				hval = (hval<<8) | uint64(input[inputIndex+2])
-        hashSlot = getHashSlot(hval)
+				hval = (hval << 8) | uint64(input[inputIndex+2])
+				hashSlot = getHashSlot(hval)
 				HashTable[hashSlot] = uint64(inputIndex)
 				inputIndex++
 				continue

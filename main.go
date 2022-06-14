@@ -5,6 +5,11 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"unicode"
+
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/fogleman/gg"
 	"github.com/samuelyuan/HexEmpire3Map/fileio"
@@ -81,15 +86,24 @@ func getImagePosition(i int, j int) (float64, float64) {
 	return x, y
 }
 
+func removeAccents(str string) string {
+	t := transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+	newStr, _, err := transform.String(t, str)
+	if err != nil {
+		log.Fatal("Error removing accents from string "+str+":", err)
+	}
+	return newStr
+}
+
 func drawMap(mapData *MapData, outputFilename string) {
 	radius := 10.0
 
-	mapHeight := len(mapData.MapTiles)
-	mapWidth := len(mapData.MapTiles[0])
+	mapWidth := len(mapData.MapTiles)
+	mapDepth := len(mapData.MapTiles[0])
 
-	maxImageWidth, maxImageHeight := getImagePosition(mapHeight, mapWidth)
+	maxImageWidth, maxImageHeight := getImagePosition(mapDepth, mapWidth)
 	dc := gg.NewContext(int(maxImageWidth), int(maxImageHeight))
-	fmt.Println("Map height: ", mapHeight, ", width: ", mapWidth)
+	fmt.Println("Map depth: ", mapDepth, ", width: ", mapWidth)
 
 	// Need to invert image because the map format is inverted
 	dc.InvertY()
@@ -189,7 +203,7 @@ func drawMap(mapData *MapData, outputFilename string) {
 
 			tile := mapData.MapTiles[j][i]
 			dc.SetRGB255(255, 255, 255)
-			dc.DrawString(tile.CityName, x-(5.0*float64(len(tile.CityName))/2.0), y-radius*1.5)
+			dc.DrawString(removeAccents(tile.CityName), x-(5.0*float64(len(tile.CityName))/2.0), y-radius*1.5)
 		}
 	}
 

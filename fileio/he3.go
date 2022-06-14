@@ -58,11 +58,11 @@ type MapTile struct {
 }
 
 type Army struct {
-	X     int32
-	Y     int32
-	Unit1 int32
-	Unit2 int32
-	Morale float32
+	X             int32
+	Y             int32
+	UnitInfantry  int32
+	UnitArtillery int32
+	Morale        float32
 }
 
 type HE3Map struct {
@@ -110,8 +110,8 @@ func writeInteger(buffer *bytes.Buffer, num int32) {
 func serializeArmy(buffer *bytes.Buffer, army *Army) {
 	writeInteger(buffer, army.X)
 	writeInteger(buffer, army.Y)
-	writeInteger(buffer, army.Unit1)
-	writeInteger(buffer, army.Unit2)
+	writeInteger(buffer, army.UnitInfantry)
+	writeInteger(buffer, army.UnitArtillery)
 	writeFloat32(buffer, army.Morale)
 }
 
@@ -183,15 +183,15 @@ func DeserializeArmy(
 		log.Fatal("Error reading y: ", err)
 	}
 
-	unit1 := int32(0)
-	if err := binary.Read(streamReader, binary.LittleEndian, &unit1); err != nil {
-		log.Fatal("Error reading unit1: ", err)
+	unitInfantry := int32(0)
+	if err := binary.Read(streamReader, binary.LittleEndian, &unitInfantry); err != nil {
+		log.Fatal("Error reading unitInfantry: ", err)
 	}
 
-	unit2 := int32(0)
+	unitArtillery := int32(0)
 	if version > 1 {
-		if err := binary.Read(streamReader, binary.LittleEndian, &unit2); err != nil {
-			log.Fatal("Error reading unit2: ", err)
+		if err := binary.Read(streamReader, binary.LittleEndian, &unitArtillery); err != nil {
+			log.Fatal("Error reading unitArtillery: ", err)
 		}
 	}
 
@@ -201,11 +201,11 @@ func DeserializeArmy(
 	}
 
 	return &Army{
-		X:     x,
-		Y:     y,
-		Unit1: unit1,
-		Unit2: unit2,
-		Morale: morale,
+		X:             x,
+		Y:             y,
+		UnitInfantry:  unitInfantry,
+		UnitArtillery: unitArtillery,
+		Morale:        morale,
 	}
 }
 
