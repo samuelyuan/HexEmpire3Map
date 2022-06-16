@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
+	"os"
 	"unicode"
 
 	"golang.org/x/text/runes"
@@ -212,15 +215,42 @@ func drawMap(mapData *MapData, outputFilename string) {
 }
 
 func main() {
+	availableModes := "[visualize, decompress, compress]"
+	modePtr := flag.String("mode", "", "Available modes: "+availableModes)
 	inputPtr := flag.String("input", "", "Input filename")
 	outputPtr := flag.String("output", "output.png", "Output filename")
 	flag.Parse()
 
-	fmt.Println("Input filename: ", *inputPtr)
-	fmt.Println("Output filename: ", *outputPtr)
-	mapData, err := readData(*inputPtr)
-	if err != nil {
-		log.Fatal("Failed to read input file: ", err)
+	mode := *modePtr
+	inputFilename := *inputPtr
+	outputFilename := *outputPtr
+	fmt.Println("Mode: ", mode)
+	fmt.Println("Input filename: ", inputFilename)
+	fmt.Println("Output filename: ", outputFilename)
+
+	if mode == "visualize" {
+		mapData, err := readData(inputFilename)
+		if err != nil {
+			log.Fatal("Failed to read input file: ", err)
+		}
+		drawMap(mapData, *outputPtr)
+	} else if mode == "decompress" {
+		decompressedBytes := fileio.DecompressHE3File(inputFilename)
+		err := os.WriteFile(outputFilename, decompressedBytes, 0644)
+		if err != nil {
+			log.Fatal("Failed to write to output file: ", err)
+		}
+	} else if mode == "compress" {
+		decompressedBytes, err := ioutil.ReadFile(inputFilename)
+		if err != nil {
+			log.Fatal("Failed to read input file: ", err)
+		}
+		compressedData := base64.StdEncoding.EncodeToString(fileio.Compress(decompressedBytes))
+		err = os.WriteFile(outputFilename, []byte(compressedData), 0644)
+		if err != nil {
+			log.Fatal("Failed to write to output file: ", err)
+		}
+	} else {
+		log.Fatal("Invalid mode. One of the following modes are supported " + availableModes)
 	}
-	drawMap(mapData, *outputPtr)
 }

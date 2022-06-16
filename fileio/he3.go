@@ -38,8 +38,6 @@ const (
 
 var (
 	SERIALIZATION_TYPE_CONV = [10]int{0, 1, 2, 3, 4, 9, 5, 6, 7, 8}
-	beforeData              []byte
-	afterData               []byte
 )
 
 type MapTile struct {
@@ -216,7 +214,6 @@ func Deserialize(content []byte) *HE3Map {
 	}
 	inputData := Decompress(rawDecodedText)
 
-	beforeData = inputData
 	streamReader := io.NewSectionReader(bytes.NewReader(inputData), int64(0), int64(len(inputData)))
 
 	version1, err := readString(streamReader)
@@ -374,4 +371,16 @@ func ReadHE3File(filename string) [][]*MapTile {
 	mapData := Deserialize(content)
 
 	return mapData.MapTiles
+}
+
+func DecompressHE3File(filename string) []byte {
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatal("Failed to load map: ", err)
+	}
+	rawDecodedText, err := base64.StdEncoding.DecodeString(string(content))
+	if err != nil {
+		log.Fatal("Failed to decode string: ", err)
+	}
+	return Decompress(rawDecodedText)
 }
