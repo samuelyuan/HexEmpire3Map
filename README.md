@@ -55,6 +55,10 @@ Example
 ./HexEmpire3Map.exe -mode=visualize -input=map.he3 -output=map.png
 ```
 
+<div style="display:inline-block;">
+<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/tropic-of-cancer.png" alt="map" width="400" height="400" />
+</div>
+
 ### Decompress
 
 The .he3 maps are compressed, but if you decompress the map, you can better understand the file structure and make changes
