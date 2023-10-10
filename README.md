@@ -6,6 +6,21 @@ This program works with Hex Empire 3 map files, which end in the file extension 
 ./HexEmpire3Map.exe -mode=[mode] -input=[input filename] -output=[output filename]
 ```
 
+### Visualize map
+
+Convert Hex Empire 3 maps to a PNG file so that you can visualize the map layout in a single image.
+
+Example
+```
+./HexEmpire3Map.exe -mode=visualize -input=map.he3 -output=map.png
+```
+
+<div style="display:inline-block;">
+<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/europe.png" alt="europe" width="465" height="400" />
+<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/india.png" alt="india" width="400" height="400" />
+<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/tropic-of-cancer.png" alt="tropic-of-cancer" width="400" height="400" />
+</div>
+
 ### File format
 
 The .he3 map is compressed using the LZF algorithm and then encoded in base64. To read the file, the file must be decoded from base64 and decompressed using the LZF algorithm to get the raw data. The file format below assumes you have the raw data.
@@ -19,7 +34,7 @@ Compression process when saving file to disk:
 
 All strings consist of an integer denoting the length of the string followed by the string contents. Some of the data is optional depending on the value of the previous fields.
 
-Map file format
+#### Map file format
 
 | Type | Size | Description |
 | ---- | ---- | ----------- |
@@ -33,7 +48,7 @@ Map file format
 | MapTile[Width][Depth] | Size of map tile array | MapTileData |
 | Boolean | 1 byte | GameState (Set to false when there is no save data) |
 
-Map tile format
+#### Map tile format
 
 | Type | Size | Description |
 | ---- | ---- | ----------- |
@@ -55,21 +70,6 @@ Army format
 | Int32  | 4 bytes  | UnitInfantryCount |
 | Int32  | 4 bytes  | UnitArtilleryCount |
 | Float32  | 4 bytes  | Morale |
-
-### Visualize map
-
-Convert Hex Empire 3 maps to a PNG file so that you can visualize the map layout in a single image.
-
-Example
-```
-./HexEmpire3Map.exe -mode=visualize -input=map.he3 -output=map.png
-```
-
-<div style="display:inline-block;">
-<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/europe.png" alt="europe" width="465" height="400" />
-<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/india.png" alt="india" width="400" height="400" />
-<img src="https://raw.githubusercontent.com/samuelyuan/HexEmpire3Map/master/screenshots/tropic-of-cancer.png" alt="tropic-of-cancer" width="400" height="400" />
-</div>
 
 ### Decompress
 
