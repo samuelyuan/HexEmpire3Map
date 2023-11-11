@@ -10,9 +10,12 @@ This program works with Hex Empire 3 map files, which end in the file extension 
 
 Convert Hex Empire 3 maps to a PNG file so that you can visualize the map layout in a single image.
 
-Example
+Examples:
 ```
 ./HexEmpire3Map.exe -mode=visualize -input=map.he3 -output=map.png
+```
+```
+./HexEmpire3Map.exe -mode=visualize -input=maps/Europe.he3 -output=europe.png
 ```
 
 <div style="display:inline-block;">
